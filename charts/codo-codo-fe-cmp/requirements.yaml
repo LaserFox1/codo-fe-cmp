@@ -1,0 +1,4 @@
+dependencies:
+- name: phx-helm-functions
+  version: ~1
+  repository: http://artifactory.prod.lkw-walter.com/artifactory/stable-charts

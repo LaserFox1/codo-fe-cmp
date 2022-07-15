@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "codo-codo-fe-cmp"
+  },
+  "artifactory": {
+    "containerRepo": {
+      "repo": "codo/codo-codo-fe-cmp"
+    }
+  },
+  "pipeline": {
+    "enabled": true,
+    "debug": false,
+    "stageDockerEnabled": true,
+    "stageDockerBuildTarget": {
+      "name": "builder",
+      "buildOutputFolder": "/usr/project",
+      "surefireReports": "/usr/project/target/surefire-reports",
+      "buildResultFile": "/usr/project/target/build-result.txt"
+    },
+    "stageHelmEnabled": true,
+    "sonarqubeAnalysisEnabled": true
+  },
+  "sonar": {
+    "scannerType": "maven"
+  },
+  "reportportal": {
+    "javaProperties": {
+      "rp.attributes" : { "value": "Type:unittest;Stage:BUILD;Version:${APP_VERSION};Name:${APP_NAME}"}
+    }
+  }
+}
