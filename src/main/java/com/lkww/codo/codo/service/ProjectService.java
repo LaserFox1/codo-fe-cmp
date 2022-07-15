@@ -15,9 +15,8 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProjectService {
-    @Autowired
     private final ProjectRepository rep;
 
     public Project create(Project project){

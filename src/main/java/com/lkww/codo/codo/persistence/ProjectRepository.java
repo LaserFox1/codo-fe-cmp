@@ -19,7 +19,7 @@ public class ProjectRepository {
         return project;
     }
     public Optional<Project> findProjectById(String id){
-        return Optional.of((Project)template.opsForHash().get(HASH_KEY, id));
+        return Optional.ofNullable((Project)template.opsForHash().get(HASH_KEY, id));
     }
     public List<Project> findAll(){
         return template.opsForHash().values(HASH_KEY);

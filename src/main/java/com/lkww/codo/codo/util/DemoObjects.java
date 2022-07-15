@@ -9,8 +9,11 @@ import java.util.List;
 
 public class DemoObjects {
 
-    public static Project demoProject(){
+    public static Project demoProject1(){
         return new Project("com.ind:codo-cmp", demoFeatureList());
+    }
+    public static Project demoProject2(){
+        return new Project("com.ind:codo-fe-cmp", demoFeatureList());
     }
 
     public static List<Feature> demoFeatureList() {
