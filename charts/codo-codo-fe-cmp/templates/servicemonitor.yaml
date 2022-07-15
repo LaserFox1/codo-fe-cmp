@@ -1,0 +1,29 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include (printf "phxFunctions.%s.fullname" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values "release" .Release) }}
+  annotations:
+{{ include (printf "phxFunctions.%s.annotations" (index .Values "phx-helm-functions" "version")) (dict "values" .Values) | nindent 4 }}
+  labels:
+{{ include (printf "phxFunctions.%s.labels" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values "release" .Release) | nindent 4 }}
+{{ include "lieferschein.labels" . | nindent 4 }}
+{{- include (printf "phxFunctions.%s.additional-labels" (index .Values "phx-helm-functions" "version")) (dict "values" .Values)| nindent 4 }}
+spec:
+  endpoints:
+    - path: /prometheus
+      port: metrics
+      scheme: http
+      relabelings:
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_app_kubernetes_io_(component|name|part_of)
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_lkw_walter_com_({{ include (printf "phxFunctions.%s.joinListWithPipe" (index .Values "phx-helm-functions" "version")) .Values.metrics.labels | default "domain|subdomain" }})
+        - action: labelmap
+          regex: __meta_kubernetes_service_annotation_lkw_walter_com_({{ include (printf "phxFunctions.%s.joinListWithPipe" (index .Values "phx-helm-functions" "version")) .Values.metrics.annotations | default "dev_contact|ops_contact" }})
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include (printf "phxFunctions.%s.name" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values) }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

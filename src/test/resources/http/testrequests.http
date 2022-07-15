@@ -1,0 +1,61 @@
+POST localhost:8080/api/project/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "projectID": "com.ind:bad-krank",
+  "features": [
+  ]
+}
+
+> {%
+client.test("Request executed successfully", function(){
+    client.assert(response.status === 201, "Response status is Created");
+
+})
+%}
+
+###
+POST localhost:8080/api/project/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "projectID": "com.ind:bad-wild-cool",
+  "features": [
+  ]
+}
+
+> {%
+client.test("Request executed successfully", function(){
+    client.assert(response.status === 201, "Response status is Created");
+
+})
+%}
+
+###
+
+GET localhost:8080/api/project/
+Accept: application/json
+
+
+> {%
+client.test("Request executed successfully", function(){
+    client.assert(response.status === 200, "Response status is ok");
+
+})
+%}
+
+###
+
+DELETE localhost:8080/api/project/
+
+> {%
+client.test("Request executed successfully", function(){
+    client.assert(response.status === 200, "Response status is ok");
+
+})
+%}
+###
+
+GET http://lkwbitbucket.lkw-walter.com/rest/api/1.0/projects/

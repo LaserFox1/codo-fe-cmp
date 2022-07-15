@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include (printf "phxFunctions.%s.fullname" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values "release" .Release) }}
+  annotations:
+{{ include (printf "phxFunctions.%s.annotations" (index .Values "phx-helm-functions" "version")) (dict "values" .Values) | nindent 4 }}
+  labels:
+{{ include (printf "phxFunctions.%s.labels" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values "release" .Release) | nindent 4 }}
+{{ include "lieferschein.labels" . | nindent 4 }}
+{{- include (printf "phxFunctions.%s.additional-labels" (index .Values "phx-helm-functions" "version")) (dict "values" .Values)| nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include (printf "phxFunctions.%s.name" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values) }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+{{ include (printf "phxFunctions.%s.annotations" (index .Values "phx-helm-functions" "version")) (dict "values" .Values) | nindent 8 }}
+      labels:
+{{ include (printf "phxFunctions.%s.labels" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values "release" .Release) | nindent 8 }}
+{{- include (printf "phxFunctions.%s.additional-labels" (index .Values "phx-helm-functions" "version")) (dict "values" .Values)| nindent 8 }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: {{ include (printf "phxFunctions.%s.name" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values) }}
+                    app.kubernetes.io/instance: {{ .Release.Name }}
+                    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include (printf "phxFunctions.%s.resolveString" (index .Values "phx-helm-functions" "version")) (dict "value" .Values.image.name "values" .Values) | trim -}}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.service.metricsTargetPort }}
+              path: /health/liveness
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              port: {{ .Values.service.metricsTargetPort }}
+              path: /health/readiness
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          {{- end }}
+          env:
+          {{ include (printf "phxFunctions.%s.resolveEnvVars" (index .Values "phx-helm-functions" "version")) (dict "env" .Values.env "values" .Values) | nindent 12 }}
+          {{ include (printf "phxFunctions.%s.flattenEnvSecrets" (index .Values "phx-helm-functions" "version")) (dict "secretName" .Values.secretName "envSecrets" .Values.envSecrets "values" .Values) | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.service.metricsTargetPort }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
