@@ -58,4 +58,4 @@ client.test("Request executed successfully", function(){
 %}
 ###
 
-GET localhost:8080
+GET http://lkwbitbucket.lkw-walter.com/rest/api/1.0/projects/

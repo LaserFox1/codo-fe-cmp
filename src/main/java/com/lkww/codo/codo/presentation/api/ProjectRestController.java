@@ -7,6 +7,7 @@ import com.lkww.codo.codo.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +29,7 @@ public class ProjectRestController {
     private static final String PATH_INDEX = "/";
     private static final String PATH_INDEX2 = "";
 
-    @Autowired
-    private final ProjectRepository rep = new ProjectRepository();
-    @Autowired
-    private final ProjectService service = new ProjectService(rep);
+    private final ProjectService service;
 
 
     @GetMapping(PATH_ID)
@@ -59,15 +57,7 @@ public class ProjectRestController {
     public HttpEntity<Project> post(@RequestBody Project project) {
         System.out.println("post");
         Project result = service.create(project);
-        return result == null ? ResponseEntity.notFound().build() : ResponseEntity.created(createSelfLink(result)).body(result);
-    }
-
-
-    private URI createSelfLink(Project body) {
-        return UriComponentsBuilder
-                .fromPath(BASE_ID)
-                .uriVariables(Map.of("id", body.getProjectID()))
-                .build().toUri();
+        return result == null ? ResponseEntity.badRequest().build() : ResponseEntity.created(createSelfLink(result)).body(result);
     }
 
     @DeleteMapping({PATH_INDEX, PATH_INDEX2})
@@ -85,5 +75,13 @@ public class ProjectRestController {
                 return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+
+    private URI createSelfLink(Project body) {
+        return UriComponentsBuilder
+                .fromPath(BASE_ID)
+                .uriVariables(Map.of("id", body.getProjectID()))
+                .build().toUri();
     }
 }
