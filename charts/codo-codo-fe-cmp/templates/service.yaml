@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include (printf "phxFunctions.%s.fullname" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values "release" .Release) }}
+  annotations:
+{{ include (printf "phxFunctions.%s.annotations" (index .Values "phx-helm-functions" "version")) (dict "values" .Values) | nindent 4 }}
+  labels:
+{{ include (printf "phxFunctions.%s.labels" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values "release" .Release) | nindent 4 }}
+{{ include "lieferschein.labels" . | nindent 4 }}
+{{- include (printf "phxFunctions.%s.additional-labels" (index .Values "phx-helm-functions" "version")) (dict "values" .Values)| nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    {{- if .Values.serviceMonitor.enabled }}
+    - name: metrics
+      port: {{ .Values.service.metricsPort }}
+      targetPort: {{ .Values.service.metricsTargetPort }}
+      protocol: TCP
+    {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include (printf "phxFunctions.%s.name" (index .Values "phx-helm-functions" "version")) (dict "chart" .Chart "values" .Values) }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

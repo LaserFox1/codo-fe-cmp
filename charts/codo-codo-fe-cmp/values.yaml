@@ -1,0 +1,105 @@
+########################################################################################################################
+#                       A U T O   G E N E R A T E D   -   D O    N O T   C H A N G E                                   #
+########################################################################################################################
+labels:
+  domain: com.ind
+  subdomain: codo
+  boundedContext: codo
+  component: spring-boot
+  templateName: spring-boot-scaffold
+  templateVersion: 1.0.17
+  templateCommitHash: "7c1b7a6"
+########################################################################################################################
+
+global:
+  artifactoryUrl: "registry.artifactory.prod.lkw-walter.com"
+  rundeckUrl: "https://devops-rundeck.prod.lkw-walter.com"
+  secretName: changeMe
+  clusterName: dev #(dev|test|preprod|prod)
+  # The datasource section is an example how to use it if multiple components of a lieferschein are sharing the same datasource
+  # - if you have multiple datasources you can introduce a subsection with the name of the datasource
+  # - if you have a single datasource you can move this section from global to the root of the values.yaml
+  # Note: If you have a datasource with a standardized FQDN (dbName.<dev>.lkw-walter.com), you can configure the DB specific
+  #       values directly in values yaml and just reference the clusterName. For an Example look at the ingress config or
+  #       the wurm.auth.client.base-url in the env section.
+
+opsContact: changeMe@example.com
+devContact: changeMe@example.com
+
+replicaCount: 2
+
+podManagementPolicy: OrderedReady
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    partition: 0
+
+image:
+  name: "{{ .Values.global.artifactoryUrl }}/codo/codo-codo-fe-cmp"
+  tag: latest
+  pullPolicy: Always
+
+# The {{ }} placeholders can be used inside the key and the value of the map
+# Example:
+# "something.{{ .Values.datasource.name }}.properties" : "{{ .Values.datasource.properties }}"
+env:
+  "JAVA_OPTS": -XX:+UseContainerSupport -XX:MaxRAMPercentage=75
+
+# The {{ }} placeholders can be used inside any part of the map
+# Make us of nested secrets via:
+# secretName: <secretName0>
+# envSecrets:
+#   - <envnameA>: <secretkeyA> # uses secretName0
+#   - <secretname1>:
+#     - <envnameB>: <secretkeyB> # uses secretName1
+#     - <envnameC>: <secretkeyC> # uses secretName1
+#   - <secretname2>:
+#     - <envnameD>: <secretkeyD> # uses secretName2
+#   ...
+secretName: "{{ .Values.global.secretName }}"
+envSecrets:
+  - spring.security.user.name: "technical_user_codo_username"
+  - spring.security.user.password: "technical_user_codo_password"
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 180
+  timeoutSeconds: 1
+  periodSeconds: 10
+  failureThreshold: 3
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 1
+  timeoutSeconds: 1
+  periodSeconds: 10
+  failureThreshold: 3
+  successThreshold: 1
+
+service:
+  type: ClusterIP
+  metricsPort: 8081
+  metricsTargetPort: 8081
+
+# A minimal CPU Ratio of factor 4 is mandatory
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: 2000m
+    memory: 1Gi
+
+serviceMonitor:
+  enabled: true
+
+monitoring: true
+
+metrics: {}
+#  labels:
+#  - domain
+#  - subdomain
+#  annotations:
+#  - dev_contact
+#  - ops_contact

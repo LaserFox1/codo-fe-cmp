@@ -1,0 +1,74 @@
+Project: <com.ind:asooo-core>
+
+	Feature: <TopKrank1-1>
+	asdfweomodfsjawoei (description)
+
+		Scenario: <SubKrank1-1-1>
+			Given <statement>
+			When <statement>
+			Then <statement>
+		ScenarioDone
+
+		Scenario: <SubKrank1-1-2>
+			Given <statement>
+			When <statement>
+			Then <statement>
+		ScenarioDone
+	FeatureDone
+	
+	Feature: <TopKrank1-2>
+	asdfweomodfsjawoei (description)
+
+		Scenario: <SubKrank1-2-1>
+			Given <statement>
+			When <statement>
+			Then <statement>
+		ScenarioDone
+
+		Scenario: <SubKrank1-2-2>
+			Given <statement>
+			When <statement>
+			Then <statement>
+		ScenarioDone
+	FeatureDone
+ProjectDone
+
+Project: <ID2>
+
+	Feature: <TopKrank2-1>
+	asdfweomodfsjawoei (description)
+
+		Scenario: <SubKrank2-1-1>
+			Given <statement>
+			When <statement>
+			Then <statement>
+		ScenarioDone
+
+		Scenario: <SubKrank2-1-2>
+			Given <statement>
+			When <statement>
+			Then <statement>
+		ScenarioDone
+	FeatureDone
+	
+	Feature: <TopKrank2-2>
+	asdfweomodfsjawoei (description)
+
+		Scenario: <SubKrank2-2-1>
+			Given <statement>
+			When <statement>
+			Then <statement>
+		ScenarioDone
+
+		Scenario: <SubKrank2-2-2>
+			Given <statement>
+			When <statement>
+			Then <statement>
+		ScenarioDone
+	FeatureDone
+ProjectDone
+
+Project: <ID3>
+
+    DemoGaming
+ProjectDone
