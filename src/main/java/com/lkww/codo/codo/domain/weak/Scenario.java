@@ -19,19 +19,39 @@ public class Scenario implements Serializable {
     String when;
     String then;
 
-    public JSONObject JSONize(){
+    public JSONObject JSONize() {
         JSONObject obj = new JSONObject();
         JSONObject syn = new JSONObject();
 
-        obj.put("Scenario", scenarioName);
+        obj.put("scenarioName", scenarioName);
 
-        syn.put("Given", given);
+        syn.put("given", given);
 
-        syn.put("When", when);
+        syn.put("when", when);
 
-        syn.put("Then", then);
+        syn.put("then", then);
 
-        obj.put("Syntax", syn);
+        obj.put("syntax", syn);
         return obj;
+    }
+
+    public static Scenario fromAPI(com.lkww.codo.codo.model.Scenario s) {
+        return Scenario.builder()
+                .scenarioName(s.getScenarioName())
+                .given(s.getGiven())
+                .when(s.getWhen())
+                .then(s.getThen())
+                .build();
+    }
+
+    public static com.lkww.codo.codo.model.Scenario toAPI(Scenario s) {
+        com.lkww.codo.codo.model.Scenario result = new com.lkww.codo.codo.model.Scenario();
+
+        result.setScenarioName(s.getScenarioName());
+        result.setGiven(s.getGiven());
+        result.setWhen(s.getWhen());
+        result.setThen(s.getThen());
+
+        return result;
     }
 }

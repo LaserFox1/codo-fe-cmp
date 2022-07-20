@@ -1,13 +1,11 @@
 package com.lkww.codo.codo.presentation.api;
 
 
+import com.lkww.codo.codo.api.ProjectApi;
 import com.lkww.codo.codo.domain.Project;
-import com.lkww.codo.codo.persistence.ProjectRepository;
 import com.lkww.codo.codo.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(ProjectRestController.BASE_URL)
-public class ProjectRestController {
+public class ProjectRestController implements ProjectApi {
 
     public static final String BASE_URL = "/api/project";
     private static final String PATH_ID = "/{id}";
@@ -33,18 +31,16 @@ public class ProjectRestController {
 
 
     @GetMapping(PATH_ID)
-    public HttpEntity<String> getProject(@PathVariable String id) {
+    @Override
+    public ResponseEntity<com.lkww.codo.codo.model.Project> projectProjectIdGet(@PathVariable String id) {
         System.out.println("GetOne");
         var result = service.getById(id);
-        return result
-                .<HttpEntity<String>>map(project ->
-                        ResponseEntity.ok(project.JSONize().toJSONString()))
-                .orElseGet(() ->
-                        ResponseEntity.notFound().build());
+        return result.map(project -> ResponseEntity.ok(Project
+                .toAPI(project))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping({PATH_INDEX, PATH_INDEX2})
-    public HttpEntity<List<JSONObject>> getAll() {
+    public ResponseEntity<List<JSONObject>> getAll() {
         System.out.println("GetAll");
         var result = service.getAll()
                 .stream()
@@ -54,10 +50,11 @@ public class ProjectRestController {
     }
 
     @PostMapping({PATH_INDEX, PATH_INDEX2})
-    public HttpEntity<Project> post(@RequestBody Project project) {
+    @Override
+    public ResponseEntity<com.lkww.codo.codo.model.Project> projectPost(@RequestBody com.lkww.codo.codo.model.Project project) {
         System.out.println("post");
-        Project result = service.create(project);
-        return result == null ? ResponseEntity.badRequest().build() : ResponseEntity.created(createSelfLink(result)).body(result);
+        Project result = service.create(Project.fromAPI(project));
+        return result == null ? ResponseEntity.badRequest().build() : ResponseEntity.created(createSelfLink(result)).body(Project.toAPI(result));
     }
 
     @DeleteMapping({PATH_INDEX, PATH_INDEX2})

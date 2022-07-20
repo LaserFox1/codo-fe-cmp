@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -20,15 +21,39 @@ public class Feature implements Serializable {
     String description;
     List<Scenario> scenarios;
 
-    public JSONObject JSONize(){
+    public JSONObject JSONize() {
         JSONObject obj = new JSONObject();
         JSONArray arr = new JSONArray();
-        obj.put("Feature", featureName);
-        obj.put("Description", description);
-        for(Scenario scenario : scenarios){
+        obj.put("featureName", featureName);
+        obj.put("description", description);
+        for (Scenario scenario : scenarios) {
             arr.add(scenario.JSONize());
         }
-        obj.put("Scenarios", arr);
+        obj.put("scenarios", arr);
         return obj;
+    }
+
+    public static Feature fromAPI(com.lkww.codo.codo.model.Feature f) {
+        return Feature.builder()
+                .featureName(f.getFeatureName())
+                .description(f.getDescription())
+                .scenarios(f.getScenarios()
+                        .stream()
+                        .map(Scenario::fromAPI)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public static com.lkww.codo.codo.model.Feature toAPI(Feature f) {
+        com.lkww.codo.codo.model.Feature result = new com.lkww.codo.codo.model.Feature();
+
+        result.setFeatureName(f.getFeatureName());
+        result.setDescription(f.getDescription());
+
+        result.setScenarios(f.getScenarios()
+                        .stream()
+                        .map(Scenario::toAPI)
+                        .collect(Collectors.toList()));
+        return result;
     }
 }

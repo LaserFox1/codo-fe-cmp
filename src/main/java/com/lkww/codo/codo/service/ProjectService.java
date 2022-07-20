@@ -3,6 +3,7 @@ package com.lkww.codo.codo.service;
 import com.lkww.codo.codo.domain.Project;
 import com.lkww.codo.codo.exceptions.ServiceException;
 import com.lkww.codo.codo.persistence.ProjectRepository;
+import com.lkww.codo.codo.util.DemoObjects;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class ProjectService {
     public Project create(Project project){
         try {
             return rep.save(project);
+            //for(Project p : DemoObjects.demoProjectList(15))
+             //   rep.save(p);
+            //return project;
         }
         catch (PersistenceException pEx) {
             throw ServiceException.cannotCreateEntity(project, pEx);

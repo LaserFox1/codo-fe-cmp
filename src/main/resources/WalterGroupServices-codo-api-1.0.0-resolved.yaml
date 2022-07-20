@@ -1,0 +1,186 @@
+---
+openapi: 3.0.0
+info:
+  title: Continuous Documentation
+  description: ""
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/WalterGroupServices/codo-api/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /project:
+    get:
+      summary: Returns a list of projects or null if none are found.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Saves a new project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        "400":
+          description: Project had the wrong format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Deletes all projects.
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /project/{projectId}:
+    get:
+      summary: Returns a project by projectID or null if none are found.
+      parameters:
+      - name: projectId
+        in: path
+        description: The ID of the project to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns A list of projects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        projectID:
+          type: string
+          example: exampleProject
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+    Feature:
+      type: object
+      properties:
+        featureName:
+          type: string
+          example: exampleFeature
+        description:
+          type: string
+          example: Sadly a demo feature for now...
+        scenarios:
+          type: array
+          items:
+            $ref: '#/components/schemas/Scenario'
+    Scenario:
+      type: object
+      properties:
+        scenarioName:
+          type: string
+          example: exampleScenario
+        given:
+          type: string
+          example: Given
+        when:
+          type: string
+          example: When
+        then:
+          type: string
+          example: Then
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+  responses:
+    BadRequest:
+      description: Project had the wrong format
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

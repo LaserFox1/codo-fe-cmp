@@ -2,7 +2,6 @@ package com.lkww.codo.codo.presentation.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lkww.codo.codo.domain.Project;
-import com.lkww.codo.codo.domain.weak.Feature;
 import com.lkww.codo.codo.service.ProjectService;
 import com.lkww.codo.codo.util.DemoObjects;
 import org.hamcrest.Matchers;
@@ -43,7 +42,6 @@ public class ProjectRestControllerTest {
     private String prID;
 
     private List<Project> list;
-    private JSONArray listJ;
     ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
@@ -52,8 +50,6 @@ public class ProjectRestControllerTest {
         pr = DemoObjects.demoProject1();
         prID = pr.getProjectID();
         list = Arrays.asList(DemoObjects.demoProject1(), DemoObjects.demoProject2());
-        listJ = new JSONArray();
-        listJ.add(pr.getFeatures().stream().map(Feature::JSONize));
     }
 
     @Test
@@ -64,7 +60,7 @@ public class ProjectRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andDo(print())
-                .andExpect(jsonPath("$.Project").value(pr.getProjectID()));
+                .andExpect(jsonPath("$.projectID").value(pr.getProjectID()));
     }
 
     @Test
@@ -84,8 +80,8 @@ public class ProjectRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andDo(print())
-                .andExpect(jsonPath("$[0].Project").value(list.get(0).getProjectID()))
-                .andExpect(jsonPath("$[1].Project").value(list.get(1).getProjectID()));
+                .andExpect(jsonPath("$[0].projectID").value(list.get(0).getProjectID()))
+                .andExpect(jsonPath("$[1].projectID").value(list.get(1).getProjectID()));
     }
 
     @Test
