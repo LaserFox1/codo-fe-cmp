@@ -32,7 +32,7 @@ public class ProjectRestController implements ProjectApi {
 
     @GetMapping(PATH_ID)
     @Override
-    public ResponseEntity<com.lkww.codo.codo.model.Project> projectProjectIdGet(@PathVariable String id) {
+    public ResponseEntity<com.lkww.codo.codo.model.Project> projectIDGet(@PathVariable String id) {
         System.out.println("GetOne");
         var result = service.getById(id);
         return result.map(project -> ResponseEntity.ok(Project
@@ -58,13 +58,13 @@ public class ProjectRestController implements ProjectApi {
     }
 
     @DeleteMapping({PATH_INDEX, PATH_INDEX2})
-    public HttpEntity<Void> deleteAll() {
+    public ResponseEntity<Void> projectDelete() {
         service.deleteAll();
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(PATH_ID)
-    public HttpEntity<Void> deleteProject(@PathVariable String id) {
+    public HttpEntity<Void> projectIDDelete(@PathVariable String id) {
         switch ((int)service.delete(id)){
             case 0:
                 return ResponseEntity.notFound().build();

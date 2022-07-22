@@ -36,19 +36,19 @@ public class ProjectService {
 
 
     public Optional<Project> getById(String ID){
-        return rep.findProjectById(ID);
+        return rep.findByProjectID(ID);
     }
 
     public List<Project> getAll(){
-        return rep.findAll();
+        return (List<Project>) rep.findAll();
     }
 
     public long delete(String ID){
-        return rep.deleteProject(ID);
+        return rep.deleteByProjectID(ID);
     }
 
     public void deleteAll(){
-        getAll().forEach(p -> rep.deleteProject(p.getProjectID()));
+        rep.deleteAll();
     }
 
 }

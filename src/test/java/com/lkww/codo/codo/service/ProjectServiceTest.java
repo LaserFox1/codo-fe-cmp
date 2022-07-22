@@ -76,21 +76,21 @@ public class ProjectServiceTest {
 
     @Test
     void ensureDeleteWorksProperly() {
-        when(rep.deleteProject(pr.getProjectID())).thenReturn(1L);
-        when(rep.deleteProject(notExists)).thenReturn(0L);
+        when(rep.deleteByProjectID(pr.getProjectID())).thenReturn(1L);
+        when(rep.deleteByProjectID(notExists)).thenReturn(0L);
 
         assertEquals(1, service.delete(pr.getProjectID()));
         assertEquals(0, service.delete(notExists));
 
-        verify(rep).deleteProject(pr.getProjectID());
-        verify(rep).deleteProject(notExists);
+        verify(rep).deleteByProjectID(pr.getProjectID());
+        verify(rep).deleteByProjectID(notExists);
         verifyNoMoreInteractions(rep);
     }
 
     @Test
     void ensureGetByIdWorksProperly() {
-        when(rep.findProjectById(pr.getProjectID())).thenReturn(Optional.of(pr));
-        when(rep.findProjectById(notExists)).thenReturn(Optional.empty());
+        when(rep.findByProjectID(pr.getProjectID())).thenReturn(Optional.of(pr));
+        when(rep.findByProjectID(notExists)).thenReturn(Optional.empty());
 
 
         Optional<Project> result = service.getById(pr.getProjectID());
@@ -98,8 +98,8 @@ public class ProjectServiceTest {
         assertEquals(pr, result.get());
         assertThat(service.getById(notExists)).isEmpty();
 
-        verify(rep).findProjectById(pr.getProjectID());
-        verify(rep).findProjectById(notExists);
+        verify(rep).findByProjectID(pr.getProjectID());
+        verify(rep).findByProjectID(notExists);
         verifyNoMoreInteractions(rep);
     }
 }

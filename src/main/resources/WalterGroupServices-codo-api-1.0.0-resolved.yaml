@@ -7,6 +7,8 @@ info:
 servers:
 - url: https://virtserver.swaggerhub.com/WalterGroupServices/codo-api/1.0.0
   description: SwaggerHub API Auto Mocking
+- url: http://localhost:8080/api
+  description: SwaggerHub API Auto Mocking
 paths:
   /project:
     get:
@@ -84,11 +86,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /project/{projectId}:
+  /project/{ID}:
     get:
-      summary: Returns a project by projectID or null if none are found.
+      summary: Returns a project by ID or null if none are found.
       parameters:
-      - name: projectId
+      - name: ID
         in: path
         description: The ID of the project to return
         required: true
@@ -98,11 +100,37 @@ paths:
           type: string
       responses:
         "200":
-          description: Returns A list of projects
+          description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Deletes a project by ID.
+      parameters:
+      - name: ID
+        in: path
+        description: The ID of the project to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
         "401":
           description: Unauthorized
           content:

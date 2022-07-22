@@ -154,6 +154,11 @@
             <version>0.2.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.redis.om</groupId>
+            <artifactId>redis-om-spring</artifactId>
+            <version>0.5.1</version>
+        </dependency>
 
     </dependencies>
 
